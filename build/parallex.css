@@ -83,5 +83,44 @@ section .image-holder img {
     opacity: 1;
 }
 
-
+.scenes {
+    height: 400vh;
+}
+.viewport {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #f4f4f4;
+}
+.text-container {
+    text-align: center;
+    position: relative;
+    width: 100%;
+}
+.text-section {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    width: 100%;
+}
+.text-section.active {
+    opacity: 1;
+}
+.word {
+    font-size: 5rem;
+    font-weight: bold;
+    margin: 20px 0;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.word.visible {
+    opacity: 1;
+}
 

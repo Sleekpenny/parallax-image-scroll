@@ -26,19 +26,7 @@
 //     });
 // }
 
-const observer = new IntersectionObserver((entries)=>{
-    entries.forEach((entry)=>{
-        console.log(entry)
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        } else {
-            entry.target.classList.remove('show')
-        }
-    });
-});
 
-const hiddenElements = document.querySelectorAll('.hidden');
-hiddenElements.forEach((el) => observer.observe(el))
 
 
 // document.addEventListener('mousemove', parallax);
@@ -52,6 +40,20 @@ hiddenElements.forEach((el) => observer.observe(el))
 //     layer.style.transform = `translateX(${x}px) translateY(${y}px)`
 // })
 // }
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        console.log(entry)
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        } else {
+            entry.target.classList.remove('show')
+        }
+    });
+});
+
+const hiddenElements = document.querySelectorAll('.hidden');
+hiddenElements.forEach((el) => observer.observe(el))
 
 class ParallaxImageEffect {
     constructor(containerId) {
@@ -89,5 +91,49 @@ class ParallaxImageEffect {
 
 document.addEventListener('DOMContentLoaded', () => {
     new ParallaxImageEffect('imageContainer');
+});
+
+class ScrollingTextReveal {
+    constructor() {
+        this.container = document.getElementById('textContainer');
+        this.sections = Array.from(this.container.querySelectorAll('.text-section'));
+        
+        this.sections[0].classList.add('active');
+        window.addEventListener('scroll', this.handleScroll.bind(this));
+    }
+
+    handleScroll() {
+        const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        const sectionIndex = Math.min(
+            Math.floor(scrollProgress * this.sections.length), 
+            this.sections.length - 1
+        );
+
+        this.updateSection(sectionIndex);
+
+        const currentSectionElement = this.sections[sectionIndex];
+        const words = currentSectionElement.querySelectorAll('.word');
+        
+        const localScrollProgress = (scrollProgress * this.sections.length) % 1;
+        const wordIndex = Math.floor(localScrollProgress * words.length);
+
+        words.forEach((word, index) => {
+            if (index === wordIndex) {
+                word.classList.add('visible');
+            } else {
+                word.classList.remove('visible');
+            }
+        });
+    }
+
+    updateSection(index) {
+        this.sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        this.sections[index].classList.add('active');
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    new ScrollingTextReveal();
 });
 
