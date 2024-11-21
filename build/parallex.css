@@ -1,3 +1,10 @@
+:root{
+    --cards:5;
+    --cardHeight: 74vh;
+    --cardTopPadding:2em;
+    --cardMargin:4vw;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -123,3 +130,57 @@ section .image-holder img {
 .word.visible {
     opacity: 1;
 }
+
+    .sticky-container{
+        height: 500vh;
+    }
+
+    #tabs {
+      list-style: none;
+      padding-left: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(var(--cards), var(--cardHeight));
+      gap: var(--cardMargin);
+      padding-bottom: calc(var(--cards) * var(--cardTopPadding));
+      width: 50%;
+      margin: 0 auto;
+      
+    }
+  
+      #tab1 {
+        --index: 1;
+      }
+  
+      #tab2 {
+        --index: 2;
+      }
+  
+      #tab3 {
+        --index: 3;
+      }
+  
+      #tab4 {
+        --index: 4;
+      }
+  
+      #tab5 {
+        --index: 5;
+      }
+  
+      .tab {
+        position: sticky;
+        top: 50px;
+        padding-top: calc(var(--index) * var(--cardTopPadding));
+        
+      }
+    
+  
+  .tab-body {
+    box-sizing: border-box;
+    padding: 40px;
+    box-shadow: 0 5px 25px 10px rgba(22, 11, 11, 0.1);
+    height: var(--cardHeight);
+    border-radius: 25px ;
+    background: rgb(105, 98, 36);
+  }
