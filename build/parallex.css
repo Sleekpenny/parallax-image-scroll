@@ -145,7 +145,7 @@ section .image-holder img {
       padding-bottom: calc(var(--cards) * var(--cardTopPadding));
       width: 50%;
       margin: 0 auto;
-      
+
     }
   
       #tab1 {
@@ -182,5 +182,5 @@ section .image-holder img {
     box-shadow: 0 5px 25px 10px rgba(22, 11, 11, 0.1);
     height: var(--cardHeight);
     border-radius: 25px ;
-    background: rgb(105, 98, 36);
+    background: white;
   }
