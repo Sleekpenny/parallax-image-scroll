@@ -1,45 +1,3 @@
-// let bg = document.getElementsByClassName("item1");
-// let moon = document.getElementsByClassName("item2");
-// let mountain = document.getElementsByClassName("item3");
-// let road = document.getElementsByClassName("item4");
-// let text = document.getElementsByClassName("item5");
-
-
-// window.addEventListener('scroll', function(){
-//     var value = window.screenY;
-
-//     bg.style.top = value * 1.5 + 'px';
-//     moon.style.left = value * -2.5 + 'px';
-//     mountain.style.top = value * -2.15 + 'px';
-//     road.style.top = value * 2.15 + 'px';
-//     text.style.top = value * 1 + 'px';
-// })
-
-// document.addEventListener("mousemove", parallax);
-// function parallax(e){
-//     document.querySelectorAll('.object').forEach(function(move){
-//         var moving_value = move.getAttribute("data-value");
-//         var x = e.clientX * moving_value;
-//         var y = e.clientY * moving_value;
-
-//         move.style.transform = "translateX(" + x + "px) translateY(" + y + "px)"
-//     });
-// }
-
-
-
-
-// document.addEventListener('mousemove', parallax);
-// function parallax(e){
-// this.querySelectorAll('.layer').forEach(layer => {
-//     const speed = layer.getAttribute('data-speed')
-
-//     const x = (window.innerWidth - e.pageX*speed) /50
-//     const y = (window.innerHeight - e.pageY*speed) /50
-
-//     layer.style.transform = `translateX(${x}px) translateY(${y}px)`
-// })
-// }
 
 const observer = new IntersectionObserver((entries)=>{
     entries.forEach((entry)=>{
@@ -52,88 +10,79 @@ const observer = new IntersectionObserver((entries)=>{
     });
 });
 
+
 const hiddenElements = document.querySelectorAll('.hidden');
 hiddenElements.forEach((el) => observer.observe(el))
 
-class ParallaxImageEffect {
-    constructor(containerId) {
-        this.container = document.getElementById(containerId);
-        this.images = Array.from(this.container.querySelectorAll('.parallax-image'));
-        
-        this.imageData = this.images.map(img => ({
-            element: img,
-            initialX: parseFloat(img.style.left),
-            initialY: parseFloat(img.style.top),
-            parallaxSpeed: parseFloat(img.dataset.parallaxSpeed) || 1
-        }));
+document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.parallax-image');
+    const container = document.querySelector('.image-container');
 
-        this.containerHeight = this.container.clientHeight;
-        window.addEventListener('scroll', this.handleScroll.bind(this));
-    }
+    // Store initial positions
+    const imageData = Array.from(images).map(img => ({
+        element: img,
+        initialLeft: parseInt(img.dataset.initialLeft),
+        initialTop: parseInt(img.dataset.initialTop),
+        initialWidth: parseInt(img.dataset.initialWidth)
+    }));
 
-    handleScroll() {
+    window.addEventListener('scroll', () => {
         const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-        
-        this.imageData.forEach(imgData => {
-            const transformY = scrollProgress * this.containerHeight * imgData.parallaxSpeed;
-            imgData.element.style.transform = `translateY(${transformY}px)`;
-            
-            const imageBottom = imgData.initialY + transformY;
-            
-            if (imageBottom > this.containerHeight) {
-                imgData.element.style.opacity = '0';
-            } else {
-                imgData.element.style.opacity = '1';
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+
+        const isScrollingDown = window.scrollY > (window.lastScrollY || 0);
+        window.lastScrollY = window.scrollY;
+
+        imageData.forEach((img, index) => {
+            const convergenceProgress = Math.max(0, Math.min(3, (scrollProgress - 3.5) * 4));
+
+            const transformY = scrollProgress * containerHeight * (2 + index * 4.1);
+            const centerX = containerWidth  - (img.initialWidth );
+            const bottomY = containerHeight - img.initialWidth;
+            const lerp = (start, end, progress) => start + (end - start) * progress;
+
+            if (isScrollingDown) {
+                img.element.style.transform = `translateY(${transformY}px)`;
+                img.element.style.left = `${lerp(img.initialLeft, centerX, convergenceProgress)}px`;
+                img.element.style.width = `${lerp(img.initialWidth, 4, convergenceProgress)}px`;
+                img.element.style.opacity = scrollProgress > 0.3 ? 0 : 1;
+            } 
+            else {
+                img.element.style.transform = `translateY(${Math.max(0, transformY * -1)}px)`;
+                img.element.style.left = `${img.initialLeft}px`;
+                img.element.style.width = `${img.initialWidth}px`;
+                img.element.style.opacity = 1;
             }
         });
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    new ParallaxImageEffect('imageContainer');
+    });
 });
 
-class ScrollingTextReveal {
-    constructor() {
-        this.container = document.getElementById('textContainer');
-        this.sections = Array.from(this.container.querySelectorAll('.text-section'));
-        
-        this.sections[0].classList.add('active');
-        window.addEventListener('scroll', this.handleScroll.bind(this));
-    }
 
-    handleScroll() {
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('.text-section');
+    
+    window.addEventListener('scroll', () => {
         const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
         const sectionIndex = Math.min(
-            Math.floor(scrollProgress * this.sections.length), 
-            this.sections.length - 1
+            Math.floor(scrollProgress * sections.length), 
+            sections.length - 1
         );
 
-        this.updateSection(sectionIndex);
+        sections.forEach((section, index) => {
+            section.classList.toggle('active', index === sectionIndex);
+        });
 
-        const currentSectionElement = this.sections[sectionIndex];
-        const words = currentSectionElement.querySelectorAll('.word');
+        const currentSection = sections[sectionIndex];
+        const words = currentSection.querySelectorAll('.word');
         
-        const localScrollProgress = (scrollProgress * this.sections.length) % 1;
+        const localScrollProgress = (scrollProgress * sections.length) % 1;
         const wordIndex = Math.floor(localScrollProgress * words.length);
 
         words.forEach((word, index) => {
-            if (index === wordIndex) {
-                word.classList.add('visible');
-            } else {
-                word.classList.remove('visible');
-            }
+            word.classList.toggle('visible', index === wordIndex);
         });
-    }
-
-    updateSection(index) {
-        this.sections.forEach(section => {
-            section.classList.remove('active');
-        });
-        this.sections[index].classList.add('active');
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    new ScrollingTextReveal();
+    });
 });
-

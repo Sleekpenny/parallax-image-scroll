@@ -60,31 +60,31 @@ section .image-holder img {
 } 
 
 
+
 .scene {
-    position: relative;
-    height: 120vh;
-    width: 100%;
-    background: rgb(56, 8, 56);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 200vh;
+    background: rgb(53, 13, 53);
 }
 .image-container {
     position: sticky;
     top: 0;
     height: 100vh;
-    width: 100%;
     overflow: hidden;
 }
 .parallax-image {
-    width: 8%;
     position: absolute;
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    transition: 
+        transform 0.5s ease-out, 
+        width 0.5s ease-out,
+        left 0.5s ease-out,
+        opacity 0.5s ease-out;
     opacity: 1;
 }
 
+
+
 .scenes {
-    height: 400vh;
+    height: 200vh;
 }
 .viewport {
     height: 100vh;
@@ -123,4 +123,3 @@ section .image-holder img {
 .word.visible {
     opacity: 1;
 }
-
